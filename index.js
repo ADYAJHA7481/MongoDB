@@ -1,65 +1,38 @@
-const mongoose = require('mongoose');
+const express = require ("express");
+const app = express();
+const mongoose = require("mongoose");
+const path = require("path");
+const Chat = require("./models/chat.js");
 
-main().then(() =>{
-    console.log("Connection successful");
-})
+app.set("views",path.join(__dirname,"views"));
+app.set("view engine","ejs");
 
-main().catch(err => console.log(err));
+main().
+then(()=>{
+    console.log("connection successful")})
+.catch(err=>{
+    console.log(err);
+});
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/test');
+    await mongoose.connect("mongodb://127.0.0.1/whatsapp");
 }
 
-const userSchema = new mongoose.Schema({
-    name: String,
-    email : String,
-    age : Number,
+let chat1 = new Chat({
+    from : "neha",
+    to : "priya",
+    msg:"send me your exam sheet",
+    created_at: new Date(),
 })
 
-const User = mongoose.model("User",userSchema);
+chat1.save().then((res)=>{
+    console.log(res);
+});
 
-User.findByIdAndDelete('66c89c464b8fc2535fd9be2d')
-.then((res)=>{
-        console.log(res);
-    }).catch((err)=>{
-            console.log(err);
-        });
+app.get("/",(req,res) =>{
+    res.send("root is working");
+});
 
-// User.findOneAndUpdate({name:"Jaya"},{age:36},{new : true})
-// .then((res)=>{
-//     console.log(res);
-// }).catch((err)=>{
-//         console.log(err);
-//     });
-
-// User.findById('66c89c464b8fc2535fd9be2e').then((res)=>{
-//     console.log(res);
-// })
-// .catch((err)=>{
-//     console.log(err);
-// });
-
-// const user2 = new User({
-//     name : "ravi",
-//     email : "ravi@yahoo.com",
-//     age : 28,
-// })
-
-// user2
-//     .save()
-//     .then((res) =>{
-//         console.log(res);
-//     })
-//     .catch((err) =>{
-//         console.log(err);
-//     });
-
-
-// User.insertMany([
-//     {name:"Adya",email:"adya@gmail.com",age: 20},
-//     {name:"Divya",email:"divya@gmail.com",age:14},
-//     {name:"Jaya",email:"jaya@gmail.com",age: 22},
-//     {name:"Arya",email:"arya@gmail.com",age: 18},
-// ]).then((res)=>{
-//     console.log(res);
-// })
+app.listen(8080,()=>{
+    console.log("server is listening on port 8080");
+});
